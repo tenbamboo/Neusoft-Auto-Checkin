@@ -26,7 +26,25 @@ public class Doge {
 			int raNum=ra.nextInt(7)+1;
 			System.out.println("成员【"+map.get("userName").toString()+"】沉睡【"+raNum+"秒】。。。。。");
 			Thread.sleep(raNum*1000);
-			run.go(map.get("userName").toString(), map.get("password").toString(), run);
+			try {
+				run.go(map.get("userName").toString(), map.get("password").toString(), run);
+			} catch (Exception e) {
+				System.out.println("成员【"+map.get("userName").toString()+"】发生异常【5秒】重新发涩。。。。。");
+				Thread.sleep(5000);
+				try {
+					run.go(map.get("userName").toString(), map.get("password").toString(), run);
+				} catch (Exception e1) {
+					System.out.println("成员【"+map.get("userName").toString()+"】再次发生异常【5秒】重新再次发涩,如果再次异常则无视。。。。。");
+					Thread.sleep(5000);
+					try {
+						run.go(map.get("userName").toString(), map.get("password").toString(), run);
+					} catch (Exception e2) {
+						System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+						System.out.println("成员【"+map.get("userName").toString()+"】签到失败，请手动签到");
+						System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+					}
+				}
+			}
 		}
 	}
 	
@@ -36,8 +54,9 @@ public class Doge {
 	 * @param userName
 	 * @param password
 	 * @param run
+	 * @throws Exception 
 	 */
-	private void go(String userName,String password,Doge run){
+	private void go(String userName,String password,Doge run) throws Exception{
 		System.out.println("成员【"+userName+"】已加入超值午餐。。。。。");
 		
 		Map<String,Object> map=HttpClientUtil.postForCookie("http://kq.neusoft.com/", null);
@@ -48,12 +67,15 @@ public class Doge {
 	
 	   Boolean loginFlag=run.login(res, cookie, userName, password,run);
 		
-		
 		if(loginFlag){
 			Map<String,Object> m1=run.gotoCheckPageAndCheckData(cookie);
 			if("true".equals(m1.get("result").toString())){
 				run.checkInOrOutAndExit(m1.get("oid").toString(),cookie,run);
+			}else{
+				throw new Exception();
 			}
+		}else{
+			throw new Exception();
 		}
 		System.out.println("成员【"+userName+"】已退出了超值午餐。。。。。");
 	}
@@ -124,15 +146,16 @@ public class Doge {
 			 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			 
 		 }else if(hour < 24 && hour > 17 &&  doc.select(".kq-message-table tbody tr").size() == 1){
-			 System.out.println("校验打卡成功 ,赶紧下班吧......");
-			 
+			 System.out.println("√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√");
+			 System.out.println("校验打卡成功 ,赶紧下班吧！！！！！！！！！！！！！！！");
+			 System.out.println("√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√");
 			 result.put("oid",  doc.select("input[name='currentempoid']").val());
 			 result.put("result", true);
 			 
 		 }else if("今天还没有打卡记录".equals(doc.select(".kq-message-table tbody tr td").html()) ){
-			 
-			 System.out.println("校验打卡成功 ,加油工作......");
-			 
+			 System.out.println("√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√");
+			 System.out.println("校验打卡成功 ,加油工作!!!!!!!!!!!!!!!");
+			 System.out.println("√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√");
 			 result.put("oid",  doc.select("input[name='currentempoid']").val());
 			 result.put("result", true);
 		 }else if(!"今天还没有打卡记录".equals(doc.select(".kq-message-table tbody tr td").html()) && doc.select(".kq-message-table tbody tr").size() >= 1){
