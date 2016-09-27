@@ -1,16 +1,13 @@
 package cn.kq;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Doge {
 	
@@ -136,9 +133,16 @@ public class Doge {
 		 Document  doc = Jsoup.parse(res);
 		 Map<String,Object> result=new HashMap<String,Object>();
 		 result.put("result", false);
-		 
-		 Calendar c=Calendar.getInstance();
-		 int hour=c.get(Calendar.HOUR_OF_DAY);
+
+         Integer hour;
+         Pattern serverTimePattern = Pattern.compile("var dateStr = \"(\\d\\d):\\d\\d:\\d\\d\";");
+         Matcher serverTimeMatcher = serverTimePattern.matcher(doc.text());
+         if (serverTimeMatcher.find()) {
+             hour = Integer.valueOf(serverTimeMatcher.group(1));
+         } else {
+             Calendar c = Calendar.getInstance();
+             hour = c.get(Calendar.HOUR_OF_DAY);
+         }
 		 if(hour < 18 && hour > 12){
 			 
 			 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
